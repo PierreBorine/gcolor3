@@ -28,6 +28,8 @@
 
 #include "gcolor3-application.h"
 
+/*static gchar *arg_color;*/
+
 static gboolean
 _print_version_and_exit (UNUSED const gchar *name,
 			 UNUSED const gchar *value,
@@ -40,6 +42,7 @@ _print_version_and_exit (UNUSED const gchar *name,
 }
 
 static const GOptionEntry options[] = {
+	/*{ "color", 'c', 0, G_OPTION_ARG_STRING, &arg_color, N_("The color to default on upon launch"), N_("HEXCOLOR")},*/
 	{ "version", 'v', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, _print_version_and_exit, N_("Show the application’s version"), NULL },
 	{ NULL }
 };

@@ -194,10 +194,6 @@ static void     make_all_relations                          (AtkObject          
 
 static void     hsv_changed                                 (GtkWidget             *hsv,
                                                              gpointer               data);
-static void     get_screen_color                            (GtkWidget             *button);
-static void     pick_color_cb                               (GObject               *source_object,
-                                                             GAsyncResult          *result,
-                                                             gpointer               user_data);
 static void     adjustment_changed                          (GtkAdjustment         *adjustment,
                                                              gpointer               data);
 static void     opacity_entry_changed                       (GtkWidget             *opacity_entry,
@@ -330,9 +326,8 @@ gcolor3_color_selection_init (Gcolor3ColorSelection *colorsel)
 {
   GtkWidget *top_hbox;
   GtkWidget *top_right_vbox;
-  GtkWidget *table, *label, *hbox, *frame, *vbox, *button;
+  GtkWidget *table, *label, *hbox, *frame, *vbox;
   GtkAdjustment *adjust;
-  GtkWidget *picker_image;
   gint i, j;
   Gcolor3ColorSelectionPrivate *priv;
   AtkObject *atk_obj;
@@ -371,21 +366,6 @@ gcolor3_color_selection_init (Gcolor3ColorSelection *colorsel)
   color_sample_new (colorsel);
   gtk_container_add (GTK_CONTAINER (frame), priv->sample_area);
   gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
-
-  button = gtk_button_new ();
-
-  gtk_widget_set_events (button, GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
-  g_object_set_data (G_OBJECT (button), I_("COLORSEL"), colorsel);
-  g_signal_connect (button, "clicked",
-                    G_CALLBACK (get_screen_color), NULL);
-  picker_image = gtk_image_new_from_icon_name ("color-select-symbolic", GTK_ICON_SIZE_BUTTON);
-  gtk_container_add (GTK_CONTAINER (button), picker_image);
-  gtk_widget_show (GTK_WIDGET (picker_image));
-  gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-
-  gtk_widget_set_tooltip_text (button,
-                               _("Click the eyedropper, then click a color "
-                               "anywhere on your screen to select that color."));
 
   top_right_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_box_pack_start (GTK_BOX (top_hbox), top_right_vbox, FALSE, FALSE, 0);
@@ -1731,65 +1711,6 @@ mouse_press (GtkWidget      *invisible,
     }
 
   return FALSE;
-}
-
-/* when the button is clicked */
-static void
-get_screen_color (GtkWidget *button)
-{
-  Gcolor3ColorSelection *colorsel = g_object_get_data (G_OBJECT (button), "COLORSEL");
-  Gcolor3ColorSelectionPrivate *priv = colorsel->private_data;
-  XdpPortal *portal;
-  XdpParent *parent;
-  GtkWindow *window;
-  GtkApplication *app;
-
-  app = GTK_APPLICATION (g_application_get_default ());
-  window = gtk_application_get_active_window (app);
-
-  portal = xdp_portal_new ();
-  parent = xdp_parent_new_gtk (window);
-
-  xdp_portal_pick_color (portal, parent,
-                         priv->cancellable,
-                         pick_color_cb, colorsel);
-}
-
-static void
-pick_color_cb (GObject      *source_object,
-               GAsyncResult *result,
-               gpointer      user_data)
-{
-  Gcolor3ColorSelection *colorsel;
-  Gcolor3ColorSelectionPrivate *priv;
-  GdkRGBA color;
-  GVariant *variant;
-  GError *error = NULL;
-
-  colorsel = GCOLOR3_COLOR_SELECTION (user_data);
-  priv = colorsel->private_data;
-
-  variant = xdp_portal_pick_color_finish (XDP_PORTAL (source_object), result, &error);
-  if (!variant)
-    {
-      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("Failed to pick color: %s", error->message);
-      g_error_free (error);
-      return;
-    }
-
-  g_variant_get (variant, "(ddd)", &color.red, &color.green, &color.blue);
-
-  priv->color[COLORSEL_RED]   = color.red;
-  priv->color[COLORSEL_GREEN] = color.green;
-  priv->color[COLORSEL_BLUE]  = color.blue;
-  gtk_rgb_to_hsv (priv->color[COLORSEL_RED],
-                  priv->color[COLORSEL_GREEN],
-                  priv->color[COLORSEL_BLUE],
-                  &priv->color[COLORSEL_HUE],
-                  &priv->color[COLORSEL_SATURATION],
-                  &priv->color[COLORSEL_VALUE]);
-  update_color (colorsel);
 }
 
 static void
