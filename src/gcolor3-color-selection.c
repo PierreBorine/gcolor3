@@ -1973,10 +1973,19 @@ update_color (Gcolor3ColorSelection *colorsel)
   g_snprintf (opacity_text, 32, "%.0f", scale_round (priv->color[COLORSEL_OPACITY], 255));
   gtk_entry_set_text (GTK_ENTRY (priv->opacity_entry), opacity_text);
 
-  g_snprintf (entryval, 11, "#%2x%2x%2x",
-              (guint) (scale_round (priv->color[COLORSEL_RED], 255)),
-              (guint) (scale_round (priv->color[COLORSEL_GREEN], 255)),
-              (guint) (scale_round (priv->color[COLORSEL_BLUE], 255)));
+  // Include hex opacity if not 100%
+  if (priv->color[COLORSEL_OPACITY] < 1.0) {
+    g_snprintf (entryval, 11, "#%2x%2x%2x%2x",
+                (guint) (scale_round (priv->color[COLORSEL_RED], 255)),
+                (guint) (scale_round (priv->color[COLORSEL_GREEN], 255)),
+                (guint) (scale_round (priv->color[COLORSEL_BLUE], 255)),
+                (guint) (scale_round (priv->color[COLORSEL_OPACITY], 255)));
+  } else {
+    g_snprintf (entryval, 11, "#%2x%2x%2x",
+                (guint) (scale_round (priv->color[COLORSEL_RED], 255)),
+                (guint) (scale_round (priv->color[COLORSEL_GREEN], 255)),
+                (guint) (scale_round (priv->color[COLORSEL_BLUE], 255)));
+  }
 
   for (ptr = entryval; *ptr; ptr++)
     if (*ptr == ' ')
