@@ -1957,34 +1957,29 @@ update_color (Gcolor3ColorSelection *colorsel)
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
                             (GTK_SPIN_BUTTON (priv->val_spinbutton)),
                             scale_round (priv->color[COLORSEL_VALUE], 100));
+
+  guint r = (guint) (scale_round (priv->color[COLORSEL_RED], 255));
+  guint g = (guint) (scale_round (priv->color[COLORSEL_GREEN], 255));
+  guint b = (guint) (scale_round (priv->color[COLORSEL_BLUE], 255));
+  guint a = (guint) (scale_round (priv->color[COLORSEL_OPACITY], 255));
+
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
-                            (GTK_SPIN_BUTTON (priv->red_spinbutton)),
-                            scale_round (priv->color[COLORSEL_RED], 255));
+                            (GTK_SPIN_BUTTON (priv->red_spinbutton)), r);
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
-                            (GTK_SPIN_BUTTON (priv->green_spinbutton)),
-                            scale_round (priv->color[COLORSEL_GREEN], 255));
+                            (GTK_SPIN_BUTTON (priv->green_spinbutton)), g);
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
-                            (GTK_SPIN_BUTTON (priv->blue_spinbutton)),
-                            scale_round (priv->color[COLORSEL_BLUE], 255));
+                            (GTK_SPIN_BUTTON (priv->blue_spinbutton)), b);
   gtk_adjustment_set_value (gtk_range_get_adjustment
-                            (GTK_RANGE (priv->opacity_slider)),
-                            scale_round (priv->color[COLORSEL_OPACITY], 255));
+                            (GTK_RANGE (priv->opacity_slider)), a);
 
   g_snprintf (opacity_text, 32, "%.0f", scale_round (priv->color[COLORSEL_OPACITY], 255));
   gtk_entry_set_text (GTK_ENTRY (priv->opacity_entry), opacity_text);
 
   // Include hex opacity if not 100%
   if (priv->color[COLORSEL_OPACITY] < 1.0) {
-    g_snprintf (entryval, 11, "#%2x%2x%2x%2x",
-                (guint) (scale_round (priv->color[COLORSEL_RED], 255)),
-                (guint) (scale_round (priv->color[COLORSEL_GREEN], 255)),
-                (guint) (scale_round (priv->color[COLORSEL_BLUE], 255)),
-                (guint) (scale_round (priv->color[COLORSEL_OPACITY], 255)));
+    g_snprintf (entryval, 11, "#%2x%2x%2x%2x", r,g,b,a);
   } else {
-    g_snprintf (entryval, 11, "#%2x%2x%2x",
-                (guint) (scale_round (priv->color[COLORSEL_RED], 255)),
-                (guint) (scale_round (priv->color[COLORSEL_GREEN], 255)),
-                (guint) (scale_round (priv->color[COLORSEL_BLUE], 255)));
+    g_snprintf (entryval, 11, "#%2x%2x%2x", r,g,b);
   }
 
   for (ptr = entryval; *ptr; ptr++)
