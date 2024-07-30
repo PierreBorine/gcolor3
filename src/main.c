@@ -76,10 +76,13 @@ _parse_options (int argc, char **argv)
 		return FALSE;
 	}
 
-  GdkRGBA *temp;
+  if (!g_str_has_prefix (gcolor3_cli_arg_color, "#")) {
+    gcolor3_cli_arg_color = g_strconcat ("#", gcolor3_cli_arg_color, NULL);
+  }
   // Check if color argument is correct
   if (g_utf8_strlen (gcolor3_cli_arg_color, -1) > 0) {
     is_gcolor3_cli_arg_color = TRUE;
+    GdkRGBA *temp;
     if (!gdk_rgba_parse (temp, gcolor3_cli_arg_color)) {
 	  	gchar *help;
 	  	help = g_strdup_printf (_("Run “%s --help” to see a full "
