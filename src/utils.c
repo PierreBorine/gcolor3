@@ -28,6 +28,9 @@
 
 #include "utils.h"
 
+gchar *gcolor3_cli_arg_color = "";
+gboolean is_gcolor3_cli_arg_color = FALSE;
+
 inline double
 scale_round (double val, double factor)
 {

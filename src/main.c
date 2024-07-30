@@ -22,13 +22,13 @@
  */
 
 #include "config.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <glib/gi18n.h>
+#include <stdio.h>
 
 #include "gcolor3-application.h"
-
-/*static gchar *arg_color;*/
 
 static gboolean
 _print_version_and_exit (UNUSED const gchar *name,
@@ -42,7 +42,7 @@ _print_version_and_exit (UNUSED const gchar *name,
 }
 
 static const GOptionEntry options[] = {
-	/*{ "color", 'c', 0, G_OPTION_ARG_STRING, &arg_color, N_("The color to default on upon launch"), N_("HEXCOLOR")},*/
+	{ "color", 'c', 0, G_OPTION_ARG_STRING, &gcolor3_cli_arg_color, N_("The color to default on upon launch"), N_("HEXCOLOR")},
 	{ "version", 'v', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, _print_version_and_exit, N_("Show the application’s version"), NULL },
 	{ NULL }
 };
@@ -75,6 +75,24 @@ _parse_options (int argc, char **argv)
 
 		return FALSE;
 	}
+
+  GdkRGBA *temp;
+  // Check if color argument is correct
+  if (g_utf8_strlen (gcolor3_cli_arg_color, -1) > 0) {
+    is_gcolor3_cli_arg_color = TRUE;
+    if (!gdk_rgba_parse (temp, gcolor3_cli_arg_color)) {
+	  	gchar *help;
+	  	help = g_strdup_printf (_("Run “%s --help” to see a full "
+	  				"list of available command line "
+	  				"options"), argv[0]);
+	  	  g_printerr ("Invalid color argument.\n%s\n", help);
+
+	  	g_free (help);
+      g_free (temp);
+      return FALSE;
+    }
+    g_free (temp);
+  }
 
 	return TRUE;
 }

@@ -2072,11 +2072,14 @@ gcolor3_color_selection_new (void)
 {
   Gcolor3ColorSelection *colorsel;
   Gcolor3ColorSelectionPrivate *priv;
-  gdouble color[4];
-  color[0] = 1.0;
-  color[1] = 1.0;
-  color[2] = 1.0;
-  color[3] = 1.0;
+  const gdouble default_color[4] = {1.0, 1.0, 1.0, 1.0};
+  const gdouble *color = default_color;
+  if (is_gcolor3_cli_arg_color) {
+    GdkRGBA arg_color;
+    if (gdk_rgba_parse (&arg_color, gcolor3_cli_arg_color)) {
+      color = (const gdouble*)&arg_color;
+    }
+  }
 
   colorsel = g_object_new (GCOLOR3_TYPE_COLOR_SELECTION, NULL);
   priv = colorsel->private_data;

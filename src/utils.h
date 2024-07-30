@@ -27,6 +27,9 @@
 
 G_BEGIN_DECLS
 
+extern gchar *gcolor3_cli_arg_color;
+extern gboolean is_gcolor3_cli_arg_color;
+
 double scale_round (double val, double factor);
 gchar *hex_value (GdkRGBA *color);
 
