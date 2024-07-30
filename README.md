@@ -1,3 +1,20 @@
+## Fork informations
+
+This fork was made to fullfill my need of a simple colorpicker with color manipulation abilities.
+I intend to use it along with [Hyprpicker](https://github.com/hyprwm/hyprpicker) as a bind shortcut.
+
+**Example:**
+```bash
+gcolor3 --color "$(hyprpicker --autocopy)"
+```
+
+#### Changes from original
+- Removed the eyedropper (To use something like Hyprpicker instead)
+- Added opacity to the hex (currently only works as output)
+- Added a cli argument (--color) to change the default color
+
+Translations may be broken idk, I have little experience with development.
+
 Color Picker
 ============
 
