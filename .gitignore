@@ -1,3 +1,5 @@
+.ccls-cache/
+result
 _build/
 build/
 .flatpak-builder
