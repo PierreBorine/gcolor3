@@ -26,14 +26,9 @@
 #include <libhandy-1/handy.h>
 
 #include "gcolor3-application.h"
-#include "gcolor3-color-store.h"
 #include "gcolor3-window.h"
 
-struct _Gcolor3ApplicationPrivate {
-	Gcolor3ColorStore *colors;
-};
-
-G_DEFINE_TYPE_WITH_PRIVATE (Gcolor3Application, gcolor3_application, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE (Gcolor3Application, gcolor3_application, GTK_TYPE_APPLICATION);
 
 static void
 gcolor3_application_action_shortcuts (UNUSED GSimpleAction *action,
@@ -163,24 +158,15 @@ gcolor3_application_startup (GApplication *application)
 static void
 gcolor3_application_activate (GApplication *application)
 {
-	Gcolor3ApplicationPrivate *priv;
 	Gcolor3Window *window;
 
-	priv = gcolor3_application_get_instance_private (GCOLOR3_APPLICATION (application));
-
-	window = gcolor3_window_new (GCOLOR3_APPLICATION (application), priv->colors);
+	window = gcolor3_window_new (GCOLOR3_APPLICATION (application));
 	gtk_window_present_with_time (GTK_WINDOW (window), GDK_CURRENT_TIME);
 }
 
 static void
 gcolor3_application_dispose (GObject *object)
 {
-	Gcolor3ApplicationPrivate *priv;
-
-	priv = gcolor3_application_get_instance_private (GCOLOR3_APPLICATION (object));
-
-	g_clear_object (&priv->colors);
-
 	G_OBJECT_CLASS (gcolor3_application_parent_class)->dispose (object);
 }
 
@@ -199,11 +185,7 @@ gcolor3_application_class_init (Gcolor3ApplicationClass *gcolor3_application_cla
 static void
 gcolor3_application_init (Gcolor3Application *application)
 {
-	Gcolor3ApplicationPrivate *priv;
-
-	priv = gcolor3_application_get_instance_private (application);
-
-	priv->colors = gcolor3_color_store_new ();
+	return;
 }
 
 Gcolor3Application *

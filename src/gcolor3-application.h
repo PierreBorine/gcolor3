@@ -29,7 +29,6 @@ G_BEGIN_DECLS
 
 typedef struct _Gcolor3Application        Gcolor3Application;
 typedef struct _Gcolor3ApplicationClass   Gcolor3ApplicationClass;
-typedef struct _Gcolor3ApplicationPrivate Gcolor3ApplicationPrivate;
 
 #define GCOLOR3_TYPE_APPLICATION            (gcolor3_application_get_type ())
 #define GCOLOR3_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), GCOLOR3_TYPE_APPLICATION, Gcolor3Application))
